@@ -17,6 +17,7 @@ export default function Card({ name, imgUrl, href }) {
               width={260}
               height={160}
               className={styles.cardImage}
+              alt="store-img"
             />
           </div>
         </a>

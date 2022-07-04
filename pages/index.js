@@ -5,11 +5,13 @@ import Banner from '../components/banner/Banner';
 import Card from '../components/card/Card';
 import styles from '../styles/Home.module.css';
 import coffeStoresData from '../data/coffee-stores.json';
+import { getImages } from '../services/unsplash';
 
 export default function Home({ stores }) {
   const handleClick = () => {
     return null;
   };
+
   return (
     <div className={styles.container}>
       <Head>
@@ -21,7 +23,12 @@ export default function Home({ stores }) {
       <main className={styles.main}>
         <Banner buttonText="View stores nearby" handleClick={handleClick} />
         <div className={styles.heroImage}>
-          <Image src="/static/hero-image.png" width={700} height={400} />
+          <Image
+            alt="hero-coffee-img"
+            src="/static/hero-image.png"
+            width={700}
+            height={400}
+          />
         </div>
         {stores.length > 0 && (
           <>
