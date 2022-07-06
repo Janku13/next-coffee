@@ -1,17 +1,15 @@
 import Head from 'next/head';
 import Image from 'next/image';
-
 import Banner from '../components/banner/Banner';
 import Card from '../components/card/Card';
 import styles from '../styles/Home.module.css';
-import coffeStoresData from '../data/coffee-stores.json';
-import { getImages } from '../services/unsplash';
+import { getStoresData } from '../utils/getStoresData';
 
 export default function Home({ stores }) {
   const handleClick = () => {
     return null;
   };
-
+  if (!stores) return <h1>API IS OFF TRY AGAIN LATER</h1>;
   return (
     <div className={styles.container}>
       <Head>
@@ -40,7 +38,10 @@ export default function Home({ stores }) {
                     key={store.id}
                     className={styles.card}
                     name={store.name}
-                    imgUrl={store.imgUrl}
+                    imgUrl={
+                      store.imgUrl ||
+                      'https://images.unsplash.com/photo-1504753793650-d4a2b783c15e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80'
+                    }
                     href={`/store/${store.id}`}
                   />
                 );
@@ -54,10 +55,11 @@ export default function Home({ stores }) {
 }
 
 export async function getStaticProps(context) {
-  console.log('teste');
+  const data = await getStoresData();
+  // const data = coffeeData;
   return {
     props: {
-      stores: coffeStoresData,
+      stores: data,
     }, //pass para o comp como prop
   };
 }

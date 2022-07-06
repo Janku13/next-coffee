@@ -3,13 +3,11 @@ import { createApi } from 'unsplash-js';
 export const unsplash = createApi({
   accessKey: process.env.NEXT_PUBLIC_UNSPLASH_PUBLIC_KEY,
 });
-export const getImages = async () => {
+export const getImages = async (name, page, perPage) => {
   const photos = await unsplash.search.getPhotos({
-    query: 'cat',
-    page: 1,
-    perPage: 10,
-    color: 'green',
-    orientation: 'portrait',
+    query: name,
+    page: page,
+    perPage: perPage,
   });
-  return photos;
+  return photos.response.results;
 };
