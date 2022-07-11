@@ -4,11 +4,16 @@ import Banner from '../components/banner/Banner';
 import Card from '../components/card/Card';
 import styles from '../styles/Home.module.css';
 import { getStoresData } from '../utils/getStoresData';
+import useTrackLocation from '../hooks/use-track-location';
 
 export default function Home({ stores }) {
+  const { latLong, locationErrorMsg, handleTrackLocation, isFetching } =
+    useTrackLocation();
+  console.log({ latLong, locationErrorMsg });
   const handleClick = () => {
-    return null;
+    handleTrackLocation();
   };
+
   if (!stores) return <h1>API IS OFF TRY AGAIN LATER</h1>;
   return (
     <div className={styles.container}>
@@ -19,7 +24,11 @@ export default function Home({ stores }) {
       </Head>
 
       <main className={styles.main}>
-        <Banner buttonText="View stores nearby" handleClick={handleClick} />
+        <Banner
+          buttonText={isFetching ? 'Locating...' : 'View stores nearby'}
+          handleClick={handleClick}
+        />
+        {locationErrorMsg && locationErrorMsg}
         <div className={styles.heroImage}>
           <Image
             alt="hero-coffee-img"
