@@ -1,26 +1,30 @@
 import { getImages } from './unsplashImages';
 
-function setUrl(query, limit) {
-  return `https://api.foursquare.com/v3/places/search?query=${query}&ll=43.653833032607096%2C-79.37896808855945&limit=${limit}`;
+function setUrl(query, limit, latLong) {
+  return `https://api.foursquare.com/v3/places/search?query=${query}&ll=${latLong}&limit=${limit}`;
 }
 
-export async function getStoresData() {
-  const FOUR_URL = setUrl('Coffee', 6);
-  const photos = await getImages('coffee shop', 1, 10);
+export async function getStoresData(
+  latLong = '43.653833032607096%2C-79.37896808855945',
+  limit = 6
+) {
+  console.log({ latLong });
+  const FOUR_URL = setUrl('Coffee', limit, latLong);
+  const photos = await getImages('coffee shop', 1, 40);
   const imgs = photos.map((result) => result.urls['small']);
 
   const options = {
     method: 'GET',
     headers: {
       Accept: 'application/json',
-      Authorization: process.env.FOURSQUARE_API_KEY,
+      Authorization: process.env.NEXT_PUBLIC_FOURSQUARE_API_KEY,
     },
   };
   try {
     const response = await fetch(FOUR_URL, options);
     const data = await response.json();
 
-    return data.results.map((result, idx) => {
+    return data.results?.map((result, idx) => {
       const neighborhood = result.location.neighborhood;
       return {
         ...result,

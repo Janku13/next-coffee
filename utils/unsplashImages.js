@@ -1,7 +1,7 @@
 import { createApi } from 'unsplash-js';
 
 export const unsplash = createApi({
-  accessKey: process.env.UNSPLASH_PUBLIC_KEY,
+  accessKey: process.env.NEXT_PUBLIC_UNSPLASH_PUBLIC_KEY,
 });
 export const getImages = async (name, page, perPage) => {
   const photos = await unsplash.search.getPhotos({

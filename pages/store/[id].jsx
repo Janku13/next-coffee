@@ -1,19 +1,37 @@
-import React from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
 import cls from 'classnames';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import coffeeStoresData from '../../data/coffee-stores.json';
+import { isEmpty } from '../../utils/isEmpty';
 import styles from '../../styles/store.module.css';
 import { getStoresData } from '../../utils/getStoresData';
+import { StoreContext } from '../../context/storeContext';
 
 export default function Store({ coffeStore }) {
   const router = useRouter();
+  const id = router.query.id;
+  const [storesList, setStoresList] = useState(coffeStore);
+
+  const { state } = useContext(StoreContext);
+  const { coffeeStores } = state;
+
+  useEffect(() => {
+    if (isEmpty(coffeStore)) {
+      if (coffeeStores.length > 0) {
+        const myShop = coffeeStores?.find((coffeStore) => {
+          return coffeStore.id.toString() === id;
+        });
+        setStoresList(myShop);
+      }
+    }
+  }, [coffeStore, coffeeStores, id]);
   if (router.isFallback) {
     return <div>Loading...</div>;
   }
-  const { name, address, neighborhood, imgUrl } = coffeStore;
+
+  const { name, address, neighborhood, imgUrl } = storesList;
 
   const handleUpvoteButton = () => {};
   return (
@@ -81,11 +99,13 @@ export default function Store({ coffeStore }) {
 
 export async function getStaticProps({ params }) {
   const data = await getStoresData();
+  const myShop = data?.find((coffeStore) => {
+    return coffeStore.id.toString() === params.id;
+  });
+
   return {
     props: {
-      coffeStore: data?.find((coffeStore) => {
-        return coffeStore.id.toString() === params.id;
-      }),
+      coffeStore: myShop ? myShop : {},
     },
   };
 }
