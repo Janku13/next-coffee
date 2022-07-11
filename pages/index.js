@@ -17,17 +17,20 @@ export default function Home({ stores }) {
   const { coffeeStores, latLong } = state;
 
   // const latLong = '41.8781,-87.6298';
-
+  const limit = 30;
   useEffect(() => {
     async function setCoffeeStoresByLocation() {
       if (latLong) {
         try {
-          const fetchedCoffeeStores = await getStoresData(latLong, 30);
-
+          const fetchedCoffeeStores = await fetch(
+            `/api/getCoffeeStoresByLocation?latLong=${latLong}&limit=${limit}`
+          );
+          const coffeeStores = await fetchedCoffeeStores.json();
           dispatch({
             type: ACTION_TYPES.SET_COFFEE_STORES,
-            payload: { coffeeStores: fetchedCoffeeStores },
+            payload: { coffeeStores },
           });
+          setCoffeeError('');
         } catch (e) {
           console.log({ e });
           setCoffeeError(e.message);
