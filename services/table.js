@@ -19,3 +19,7 @@ export const createStore = async (coffeStoreData) => {
   const data = await table.create([{ fields: coffeStoreData }]);
   return data;
 };
+
+export const updateStoreVotes = async () => {
+  const data = await table.update([{}]);
+};

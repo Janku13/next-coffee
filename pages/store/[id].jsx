@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
+import useSWR from 'swr';
 import cls from 'classnames';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -13,6 +14,7 @@ export default function Store({ coffeStore }) {
   const router = useRouter();
   const id = router.query.id;
   const [storesList, setStoresList] = useState(coffeStore);
+  const [votingCount, setVotingCount] = useState('');
 
   const { state } = useContext(StoreContext);
   const { coffeeStores } = state;
@@ -58,10 +60,21 @@ export default function Store({ coffeStore }) {
   if (router.isFallback) {
     return <div>Loading...</div>;
   }
-
+  const fetcher = (url) => fetch(url).then((res) => res.json());
+  const { data, error } = useSWR(`/api/getStoreById?id=${id}`, fetcher);
+  console.log(data);
+  useEffect(() => {
+    if (data && data.length > 0) {
+      setStoresList(data[0]);
+      setVotingCount(data[0].voting);
+    }
+  }, [data]);
   const { name, address, neighborhood, imgUrl } = storesList;
 
   const handleUpvoteButton = () => {};
+  if (error) {
+    return <div>Error fetching data</div>;
+  }
   return (
     <div className={styles.layout}>
       <Head>
@@ -113,7 +126,7 @@ export default function Store({ coffeStore }) {
               width="24"
               height="24"
             />
-            <p className={styles.text}>1</p>
+            <p className={styles.text}>{votingCount}</p>
           </div>
 
           <button className={styles.upvoteButton} onClick={handleUpvoteButton}>

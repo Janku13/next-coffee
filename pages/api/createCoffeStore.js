@@ -1,6 +1,6 @@
 import { findStore, createStore } from '../../services/table';
 
-const getMinifiedRecords = (records) => {
+export const getMinifiedRecords = (records) => {
   return records.map((record) => ({
     ...record.fields,
   }));
