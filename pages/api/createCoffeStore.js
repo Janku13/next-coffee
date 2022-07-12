@@ -8,8 +8,8 @@ const getMinifiedRecords = (records) => {
 
 const createCoffeeStore = async (req, res) => {
   if (req.method === 'POST') {
-    const { id, name, neighborhood, adress, imgUrl, voting } = req.body;
-    const storeData = { id, name, neighborhood, adress, imgUrl, voting };
+    const { id, name, neighborhood, address, imgUrl, voting } = req.body;
+    const storeData = { id, name, neighborhood, address, imgUrl, voting };
     try {
       if (!id) return res.json({ message: 'id is missing' });
       const existingStore = await findStore(id);

@@ -8,7 +8,7 @@ const table = base('coffee-stores');
 export const findStore = async (id) => {
   const findCoffeeStoreRecords = await table
     .select({
-      filterByFormula: `id=${id}`,
+      filterByFormula: `id="${id}"`,
     })
     .firstPage();
   return findCoffeeStoreRecords;

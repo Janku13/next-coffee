@@ -17,14 +17,42 @@ export default function Store({ coffeStore }) {
   const { state } = useContext(StoreContext);
   const { coffeeStores } = state;
 
+  const handleCreateCoffeeStore = async (myShop) => {
+    const { id, name, voting, imgUrl, neighborhood, address } = myShop;
+    try {
+      const response = await fetch('/api/createCoffeStore', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id,
+          name,
+          voting: 0,
+          imgUrl,
+          neighborhood: neighborhood || '',
+          address: address || '',
+        }),
+      });
+      const dbCoffeeStore = await response.json();
+      console.log(dbCoffeeStore);
+    } catch (e) {
+      console.error('Error saving store', err);
+    }
+  };
   useEffect(() => {
     if (isEmpty(coffeStore)) {
       if (coffeeStores.length > 0) {
-        const myShop = coffeeStores?.find((coffeStore) => {
-          return coffeStore.id.toString() === id;
+        const myShop = coffeeStores?.find((store) => {
+          return store.id.toString() === id;
         });
-        setStoresList(myShop);
+        if (myShop) {
+          setStoresList(myShop);
+          handleCreateCoffeeStore(myShop);
+        }
       }
+    } else {
+      handleCreateCoffeeStore(coffeStore);
     }
   }, [coffeStore, coffeeStores, id]);
   if (router.isFallback) {
