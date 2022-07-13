@@ -37,18 +37,20 @@ export default function Store({ coffeStore }) {
         }),
       });
       const dbCoffeeStore = await response.json();
-      console.log(dbCoffeeStore);
     } catch (e) {
       console.error('Error saving store', err);
     }
   };
   useEffect(() => {
+    console.log(1);
     if (isEmpty(coffeStore) || coffeStore === undefined) {
+      console.log(coffeeStores);
       if (coffeeStores.length > 0) {
+        console.log(3);
         const myShop = coffeeStores?.find((store) => {
           return store.id.toString() === id;
         });
-        console.log(myShop);
+        console.log({ myShop });
         if (myShop) {
           setStoresList(myShop);
           handleCreateCoffeeStore(myShop);
