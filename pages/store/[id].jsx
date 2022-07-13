@@ -20,6 +20,29 @@ export default function Store({ coffeStore }) {
   const { coffeeStores } = state;
   const fetcher = (url) => fetch(url).then((res) => res.json());
   const { data, error } = useSWR(`/api/getStoreById?id=${id}`, fetcher);
+  useEffect(() => {
+    if (isEmpty(coffeStore) || coffeStore === undefined) {
+      console.log(coffeeStores);
+      if (coffeeStores.length > 0) {
+        const myShop = coffeeStores?.find((store) => {
+          return store.id.toString() === id;
+        });
+        console.log({ myShop });
+        if (myShop) {
+          setStoresList(myShop);
+          handleCreateCoffeeStore(myShop);
+        }
+      }
+    } else {
+      handleCreateCoffeeStore(coffeStore);
+    }
+  }, [coffeStore, coffeeStores, id]);
+  useEffect(() => {
+    if (data && data.length > 0) {
+      setStoresList(data[0]);
+      setVotingCount(data[0].voting);
+    }
+  }, [data]);
   const handleCreateCoffeeStore = async (myShop) => {
     const { id, name, voting, imgUrl, neighborhood, address } = myShop;
     try {
@@ -42,34 +65,13 @@ export default function Store({ coffeStore }) {
       console.error('Error saving store', err);
     }
   };
-  useEffect(() => {
-    if (isEmpty(coffeStore) || coffeStore === undefined) {
-      console.log(coffeeStores);
-      if (coffeeStores.length > 0) {
-        const myShop = coffeeStores?.find((store) => {
-          return store.id.toString() === id;
-        });
-        console.log({ myShop });
-        if (myShop) {
-          setStoresList(myShop);
-          handleCreateCoffeeStore(myShop);
-        }
-      }
-    } else {
-      handleCreateCoffeeStore(coffeStore);
-    }
-  }, [coffeStore, coffeeStores, id]);
-  if (router.isFallback) {
-    return <div>Loading...</div>;
-  }
 
-  useEffect(() => {
-    if (data && data.length > 0) {
-      setStoresList(data[0]);
-      setVotingCount(data[0].voting);
-    }
-  }, [data]);
-  const { name, address, neighborhood, imgUrl } = storesList;
+  const { name, address, neighborhood, imgUrl } = storesList || {
+    name: '',
+    address: '',
+    neighborhood: '',
+    imgUrl: '',
+  };
 
   const handleUpvoteButton = async () => {
     try {
@@ -91,6 +93,9 @@ export default function Store({ coffeStore }) {
       console.error('Error upvoting store', err);
     }
   };
+  if (router.isFallback) {
+    return <div>Loading...</div>;
+  }
   if (error) {
     return <div>Error fetching data</div>;
   }
