@@ -18,7 +18,8 @@ export default function Store({ coffeStore }) {
 
   const { state } = useContext(StoreContext);
   const { coffeeStores } = state;
-
+  const fetcher = (url) => fetch(url).then((res) => res.json());
+  const { data, error } = useSWR(`/api/getStoreById?id=${id}`, fetcher);
   const handleCreateCoffeeStore = async (myShop) => {
     const { id, name, voting, imgUrl, neighborhood, address } = myShop;
     try {
@@ -42,11 +43,9 @@ export default function Store({ coffeStore }) {
     }
   };
   useEffect(() => {
-    console.log(1);
     if (isEmpty(coffeStore) || coffeStore === undefined) {
       console.log(coffeeStores);
       if (coffeeStores.length > 0) {
-        console.log(3);
         const myShop = coffeeStores?.find((store) => {
           return store.id.toString() === id;
         });
@@ -63,8 +62,6 @@ export default function Store({ coffeStore }) {
   if (router.isFallback) {
     return <div>Loading...</div>;
   }
-  const fetcher = (url) => fetch(url).then((res) => res.json());
-  const { data, error } = useSWR(`/api/getStoreById?id=${id}`, fetcher);
 
   useEffect(() => {
     if (data && data.length > 0) {
