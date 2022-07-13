@@ -15,11 +15,24 @@ export const findStore = async (id) => {
 };
 
 export const createStore = async (coffeStoreData) => {
-  console.log(coffeStoreData);
   const data = await table.create([{ fields: coffeStoreData }]);
   return data;
 };
 
-export const updateStoreVotes = async () => {
-  const data = await table.update([{}]);
+export const updateStoreVotes = async (record, votingNumber) => {
+  const intVoting = parseInt(votingNumber);
+  try {
+    const data = await table.update([
+      {
+        id: record.recordId,
+        fields: {
+          voting: intVoting,
+        },
+      },
+    ]);
+
+    return data;
+  } catch (e) {
+    console.log(e);
+  }
 };

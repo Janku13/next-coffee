@@ -7,10 +7,10 @@ const getStoreById = async (req, res) => {
   try {
     if (!id) res.json({ message: 'Store ID is missing' });
     const existingStore = await findStore(id);
-    console.log(existingStore);
+
     if (existingStore.length !== 0) {
       const records = getMinifiedRecords(existingStore);
-      console.log(records);
+
       return res.json(records);
     } else {
       res.json({ message: 'did not find the id' });

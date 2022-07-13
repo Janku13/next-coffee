@@ -1,4 +1,4 @@
-import { findStore } from '../../services/table';
+import { findStore, updateStoreVotes } from '../../services/table';
 import { getMinifiedRecords } from './createCoffeStore';
 
 const favoritStoreById = async (req, res) => {
@@ -7,11 +7,18 @@ const favoritStoreById = async (req, res) => {
     try {
       if (!id) res.json({ message: 'Store ID is missing' });
       const existingStore = await findStore(id);
-      console.log(existingStore);
       if (existingStore.length !== 0) {
         const records = getMinifiedRecords(existingStore);
-        console.log(records);
-        return res.json(records);
+        const record = records[0];
+        const calculateVoting = parseInt(record.voting) + 1;
+
+        const data = await updateStoreVotes(record, calculateVoting);
+        if (data) {
+          const minifiedData = getMinifiedRecords(data);
+          return res.json(minifiedData);
+        }
+      } else {
+        res.json({ message: 'coffee store id does not exist', id });
       }
     } catch (e) {
       res.status(500).json({ message: 'error favourting' });

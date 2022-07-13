@@ -10,12 +10,16 @@ import { ACTION_TYPES, StoreContext } from '../context/storeContext';
 
 export default function Home({ stores }) {
   const [coffeeError, setCoffeeError] = useState('');
+  const [da, setda] = useState('');
   const { locationErrorMsg, handleTrackLocation, isFetching } =
     useTrackLocation();
 
   const { state, dispatch } = useContext(StoreContext);
   const { coffeeStores, latLong } = state;
 
+  useEffect(() => {
+    console.log('testing');
+  }, [da]);
   // const latLong = '41.8781,-87.6298';
   const limit = 30;
   useEffect(() => {

@@ -14,7 +14,7 @@ export default function Store({ coffeStore }) {
   const router = useRouter();
   const id = router.query.id;
   const [storesList, setStoresList] = useState(coffeStore);
-  const [votingCount, setVotingCount] = useState('');
+  const [votingCount, setVotingCount] = useState(0);
 
   const { state } = useContext(StoreContext);
   const { coffeeStores } = state;
@@ -43,11 +43,12 @@ export default function Store({ coffeStore }) {
     }
   };
   useEffect(() => {
-    if (isEmpty(coffeStore)) {
+    if (isEmpty(coffeStore) || coffeStore === undefined) {
       if (coffeeStores.length > 0) {
         const myShop = coffeeStores?.find((store) => {
           return store.id.toString() === id;
         });
+        console.log(myShop);
         if (myShop) {
           setStoresList(myShop);
           handleCreateCoffeeStore(myShop);
@@ -62,7 +63,7 @@ export default function Store({ coffeStore }) {
   }
   const fetcher = (url) => fetch(url).then((res) => res.json());
   const { data, error } = useSWR(`/api/getStoreById?id=${id}`, fetcher);
-  console.log(data);
+
   useEffect(() => {
     if (data && data.length > 0) {
       setStoresList(data[0]);
@@ -71,7 +72,26 @@ export default function Store({ coffeStore }) {
   }, [data]);
   const { name, address, neighborhood, imgUrl } = storesList;
 
-  const handleUpvoteButton = () => {};
+  const handleUpvoteButton = async () => {
+    try {
+      const response = await fetch('/api/favoritStoreById', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id,
+        }),
+      });
+      const dbCoffeeStore = await response.json();
+      if (dbCoffeeStore && dbCoffeeStore.length > 0) {
+        let count = votingCount + 1;
+        setVotingCount(count);
+      }
+    } catch (e) {
+      console.error('Error upvoting store', err);
+    }
+  };
   if (error) {
     return <div>Error fetching data</div>;
   }

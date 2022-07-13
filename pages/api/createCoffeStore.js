@@ -2,6 +2,7 @@ import { findStore, createStore } from '../../services/table';
 
 export const getMinifiedRecords = (records) => {
   return records.map((record) => ({
+    recordId: record.id,
     ...record.fields,
   }));
 };
@@ -20,7 +21,7 @@ const createCoffeeStore = async (req, res) => {
         if (name && id) {
           const newStore = await createStore(storeData);
           const newStoreData = getMinifiedRecords(newStore);
-          console.log(newStoreData);
+
           return res.json(newStoreData);
         } else {
           res.status(422);

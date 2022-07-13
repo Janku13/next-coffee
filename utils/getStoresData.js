@@ -8,7 +8,6 @@ export async function getStoresData(
   latLong = '43.653833032607096%2C-79.37896808855945',
   limit = 6
 ) {
-  console.log({ latLong });
   const FOUR_URL = setUrl('Coffee', limit, latLong);
   const photos = await getImages('coffee shop', 1, 40);
   const imgs = photos.map((result) => result.urls['small']);
